@@ -105,7 +105,7 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 
 		return $data;
 	}
-	
+
 
 
 	/**
@@ -170,7 +170,7 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 
 		return $data;
 	}
-	
+
 
 	/**
 	 * Creates business posts.
@@ -192,7 +192,7 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 
 		return $template_type == 1 ? self::wyz_create_post_1( $value, $is_current_user_author, $is_wall ) : self::wyz_create_post_2( $value, $is_current_user_author, $is_wall );
 	}
-	
+
 
 
 	private static function wyz_create_post_1( $value, $is_current_user_author, $is_wall ) {
@@ -235,7 +235,7 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 				<?php } ?>
 			</div>
 			<!-- Post Content -->
-			<div class="content">
+			<div class="content shadow">
 				<?php if ( isset( $value['post'] ) && ! empty( $value['post'] ) ) {
 					echo '<p>' . $value['post'] . '</p>';
 				} else {
@@ -292,12 +292,12 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 				<?php self::display_post_comments( $value['ID'] );?>
 				</div>
 			</div>
-			
+
 		</div>
 		<?php
 		return ob_get_clean();
 	}
-	
+
 
 
 	private static function wyz_create_post_2( $value, $is_current_user_author, $is_wall ) {
@@ -368,7 +368,7 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 				<?php
 				$liked = ( is_array( $value ) && in_array( get_current_user_id(), $value['user_likes'] ) ) || $value ==  get_current_user_id();
 				WyzPostShare::the_like_button( $value['ID'], 2 , $value['likes'], $liked);
-					
+
 				if ( ! comments_open( $value['ID'] ) && 0 < get_comments_number( $value['ID'] ) ) {?>
 				<a class="wyz-prim-color-txt" href="<?php echo get_the_permalink( $value['ID'] );?>" title="<?php esc_html_e( 'comments closed', 'wyzi-business-finder' )?>" class="wall-no-comments"><i class="fa fa-reply"></i><span><?php echo $comm_stat;?></span></a>
 				<?php } elseif ( comments_open( $value['ID'] ) ) {?>
@@ -395,7 +395,7 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 		<?php
 		return ob_get_clean();
 	}
-	
+
 
 
 	private static function display_post_comments( $post_id ) {
@@ -415,7 +415,7 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 			</div>
 		<?php }
 	}
-	
+
 
 
 	private static function comments_empty() {
@@ -441,7 +441,7 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 		ob_start();?>
 		<div class="the-comment">
 			<div class="com-header">
-				<?php $user = get_user_by( 'login', $comment->comment_author ); 
+				<?php $user = get_user_by( 'login', $comment->comment_author );
 				$avatar = '';
 				if ( $user ) {
 					$username = $user->display_name;
@@ -459,10 +459,10 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 		<?php
 		return ob_get_clean();
 	}
-	
 
 
-	private static function wyz_get_business_header( $is_grid ){
+
+	private static function wyz_get_business_header( $is_grid , $business_data = ''){
 
 		if ( method_exists( 'WyzBusinessPostOverride', 'wyz_get_business_header') ) {
 			return WyzBusinessPostOverride::wyz_get_business_header( $is_grid );
@@ -470,22 +470,38 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 
 		$sticky = is_sticky();
 		ob_start();?>
-		<div class="sin-busi-post<?php echo $is_grid ? ' bus-post-grid' : '';
-									   echo $sticky ? ' bus-sticky' : '';?> sin-busi-item">
-			<div class="head fix">
+		<div class="sin-bordes sin-busi-post<?php echo $is_grid ? ' bus-post-grid' : '';
+									   echo $sticky ? ' bus-sticky' : '';?> sin-busi-item" style="border: 0px !important;">
+			<div class="head fix con-bordes" style="border: 1px solid #ececec !important; position: relative;">
 			<?php if ( $sticky ) {?>
 					<div class="sticky-notice featured-banner"><span class="wyz-primary-color wyz-prim-color"><?php esc_html_e( 'FEATURED', 'wyzi-business-finder' );?></span></div>
 			<?php }?>
 			<?php if ( has_post_thumbnail() ) {?>
 				<a href="<?php echo get_the_permalink();?>" class="post-logo"><?php the_post_thumbnail( 'medium' );?></a>
 			<?php } ?>
-				
-				<h3><a href="<?php echo get_the_permalink();?>"><?php the_title();?></a></h3>
+				<h3 style="padding: 0 5px;"><a href="<?php echo get_the_permalink();?>"><?php the_title();?></a></h3>
+				<div class="" style="position: absolute; bottom: 3px; right: 15px;">
+						<?php
+							$business_id = $business_data['id'];
+							$mapGPS = get_post_meta($business_id,'wyz_business_location',true);
+							$lat = $mapGPS['latitude'];
+							$lon = $mapGPS['longitude'];
+						 ?>
+
+						 	<a href="<?php echo get_the_permalink();?>" class="btn btn-danger btn-xs" title="Leer Más">
+								<span class="dashicons dashicons-info"></span>  Leer Más
+							</a>
+
+						<a href="https://www.google.com/maps?daddr=<?php echo $lat; ?>,<?php echo $lon; ?>" class="btn btn-primary btn-xs" title="Cómo Llegar">
+						<span class="dashicons dashicons-admin-site"></span> Cómo Llegar
+						</a>
+				</div>
+
 			</div>
 		<?php
 		return ob_get_clean();
 	}
-	
+
 
 
 	private static function wyz_get_business_content( $business_data, $is_grid ){
@@ -496,21 +512,32 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 
 		ob_start();
 		$excerpt_len = $is_grid ? 150 : 230;?>
-		<div class="content">
+		<div class="content con-bordes" style="padding: 0px !important; border: 1px solid #ececec !important; margin-top: 15px !important; height: 200px !important;" >
+
 			<?php if ( '' != $business_data['description'] ) { ?>
 				<p><?php echo WyzHelpers::substring_excerpt( $business_data['description'], $excerpt_len );//substr( $business_data['description'] , 0, $excerpt_len );?></p>
 				<a class="read-more wyz-secondary-color-text" href="<?php echo esc_attr( get_permalink() );?>"><?php esc_html_e( 'read more', 'wyzi-business-finder' )?></a>
 			<?php }?>
+
+			<?php
+
+					$meta_custom = '';
+					$meta_custom = get_post_meta( $business_data['id'], 'wyzi_claim_fields_0' , true );
+					$content = get_post_field('post_content', $business_data['id']);
+					echo do_shortcode($meta_custom);
+			?>
+
 			<?php if ( '' !== $business_data['category']['icon'] ) { ?>
-				<a class="busi-post-label" style="background-color:<?php echo esc_attr( $business_data['category']['color'] );?>;" href="<?php echo esc_url( $business_data['category']['link'] );?>">
+				<a class="busi-post-label" style="display:none; background-color:<?php echo esc_attr( $business_data['category']['color'] );?>;" href="<?php echo esc_url( $business_data['category']['link'] );?>">
 					<img src="<?php echo esc_url( $business_data['category']['icon'] );?>" alt="<?php echo esc_attr( $business_data['category']['name'] );?>" />
 				</a>
 			<?php }?>
 			</div>
+
 		<?php
 		return ob_get_clean();
 	}
-	
+
 
 
 	private static function wyz_get_business_footer( $business_data ){
@@ -520,41 +547,12 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 		}
 
 		ob_start();?>
-			<div class="footer fix">
-			<?php if ( '' !== $business_data['country_name'] ) { ?>
-				<a href="<?php echo esc_url( $business_data['country_link'] );?>" class="post-like link">
-					<i class="fa fa-map-marker" aria-hidden="true"></i> <?php echo esc_html( $business_data['country_name'] ); ?>
-				</a>
-			<?php }
-			if ( '' !== $business_data['website'] ) {?>
-				<div class="post-like">
-					<a target="_blank" class="link" href="<?php echo esc_url( $business_data['website'] );?>"><i class="fa fa-globe" aria-hidden="true"></i> <?php echo esc_html( $business_data['website'] );?></a>
-				</div>
-			<?php }
-				?>
-				<div class="rate float-right" >
-					<span>
-					<?php if ( 0 != $business_data['rate_number'] ) {
-						$rate = $business_data['rate'];
-						for ( $i = 0; $i < 5; $i++ ) {
-
-							if ( $rate > 0 ) {
-								echo '<i class="fa fa-star star-checked" aria-hidden="true"></i>';
-								$rate--;
-							} else {
-								echo '<i class="fa fa-star star-unchecked" aria-hidden="true"></i>';
-							}
-						}
-					}?>
-					</span>
-				</div>
-				<?php WyzPostShare::the_favorite_button( $business_data['id'] );?>
-			</div>
+			<div class="footer fix"></div>
 		</div>
 		<?php
 		return ob_get_clean();
 	}
-	
+
 
 
 
@@ -568,20 +566,100 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 		}
 
 		$business_data = self::wyz_get_business_data( get_the_ID() );
-		return self::wyz_get_business_header( false ) . self::wyz_get_business_content( $business_data, false ) . self::wyz_get_business_footer( $business_data );
+		return self::wyz_get_business_header( false , $business_data) . self::wyz_get_business_content( $business_data, false ) . self::wyz_get_business_footer( $business_data );
 	}
-	
+
+
+
 
 
 	public static function wyz_create_business_grid_look() {
 
-		if ( method_exists( 'WyzBusinessPostOverride', 'wyz_create_business_grid_look') ) {
-			return WyzBusinessPostOverride::wyz_create_business_grid_look();
-		}
+
 
 		$business_data = self::wyz_get_business_data( get_the_ID() );
+		$sticky = is_sticky();
+		if ($sticky) {
+			return self::custom_get_business_listable( true , $business_data );
+		} else {
+			return self::custom_get_business_listable( true , $business_data );
+		}
 
-		return self::wyz_get_business_header( true ) . self::wyz_get_business_content( $business_data, true ) . self::wyz_get_business_footer( $business_data );
+	}
+
+	private static function custom_get_business_listable( $is_grid , $business_data = ''){
+
+		$sticky = is_sticky();
+		ob_start();?>
+
+						<a href="<?php echo esc_attr( get_permalink() );?>" class="grid__item  grid__item--widget" style="padding-left: 15px !important; padding-right: 15px !important; height: 440px !important">
+							<article class="card  card--listing  card--widget  " data-latitude="1.0"
+							         data-longitude="2.0"
+							         data-img="imagen"
+							         data-permalink="url">
+
+							<?php
+
+									$meta_custom = '';
+									$meta_custom = get_post_meta( $business_data['id'], 'wyzi_claim_fields_4' , true );
+									if ('' != $meta_custom) {
+										echo do_shortcode($meta_custom);
+									} else { ?>
+																		<aside class="card__image" style="">
+								<?php if ( $sticky ) {?>
+															<span class="card__featured-tag"><?php esc_html_e( 'FEATURED', 'wyzi-business-finder' );?></span>
+													<?php }?>
+
+								</aside>
+									<?php }
+
+								?>
+
+
+								<div class="card__content">
+									<h2 class="card__title" itemprop="name" ><?php the_title();?></h2>
+									<?php
+									$bldg = get_post_meta( $business_data['id'], 'wyz_business_bldg' , true );
+									$street = get_post_meta( $business_data['id'], 'wyz_business_street' , true );
+									$city = get_post_meta( $business_data['id'], 'wyz_business_city' , true );
+									?>
+									<div class="card__tagline" style="font-size: 0.7em !important; overflow: hidden"><?php echo $bldg.'  '.$street.' '.$city; ?></div>
+									<footer class="card__footer">
+
+											<ul class="card__tags">
+													<li>
+														<div class="card__tag">
+															<div class="pin__icon">
+																<svg width="18" height="26" viewBox="0 0 18 26" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-16 -11)" fill="none" fill-rule="evenodd"><circle stroke="currentColor" stroke-width="2" cx="24" cy="24" r="24"></circle><path d="M18.92 26.79c.11.016.227.03.34.044-.474.387-.843.87-1.017 1.395l-.01.027-2.212 8.043c-.08.295.093.6.388.68.05.013.098.02.147.02.243 0 .466-.162.533-.407l2.21-8.028c.256-.747 1.21-1.406 2.137-1.513-.15.224-.27.474-.335.74l-1.197 5.83c-.046.224.1.443.323.49.028.005.056.008.084.008.193 0 .366-.136.406-.332l1.194-5.813c.087-.353.34-.687.634-.887.704.027 1.437.042 2.19.042.756 0 1.49-.015 2.193-.042.294.2.545.528.63.87l1.197 5.83c.04.196.213.332.406.332.028 0 .056-.003.084-.01.225-.045.37-.264.323-.49l-1.2-5.845c-.065-.26-.18-.503-.33-.722.926.107 1.88.766 2.136 1.512l2.21 8.028c.067.246.29.407.532.407.05 0 .098-.006.147-.02.295-.08.468-.385.387-.68l-2.215-8.043-.008-.028c-.175-.526-.543-1.008-1.02-1.396.116-.015.233-.028.342-.044 1.975-.284 2.82-.67 2.91-1.33.11-.78-.867-1.17-1.837-1.446-2.995-.855-3.438-1.423-3.49-1.628-.073-.295.565-.91 1.128-1.455.702-.677 1.575-1.522 2.11-2.594 1.06-2.13.632-3.628.086-4.51C30.164 11.74 27.028 11 24.736 11c-2.294 0-5.43.74-6.722 2.827-.546.88-.974 2.38.087 4.51.47.942 1.177 1.713 1.802 2.392.602.655 1.225 1.332 1.118 1.71-.076.27-.59.836-3.174 1.574-.97.277-1.947.665-1.838 1.447.093.66.937 1.046 2.913 1.33zm-.77-1.712c2.497-.713 3.674-1.412 3.935-2.34.274-.97-.487-1.798-1.368-2.757-.575-.625-1.227-1.334-1.626-2.137-.668-1.344-.714-2.5-.136-3.433.986-1.59 3.614-2.304 5.78-2.304 2.17 0 4.797.713 5.782 2.304.578.934.532 2.09-.137 3.433-.45.902-1.214 1.64-1.888 2.293-.89.86-1.66 1.604-1.43 2.52.234.934 1.428 1.614 4.258 2.422.352.1.595.19.76.26-.64.225-2.057.47-4.175.596-.042 0-.084-.005-.126-.005-.05 0-.096.007-.14.02-.862.046-1.83.074-2.905.074-1.076 0-2.043-.03-2.904-.075-.044-.013-.09-.02-.14-.02-.04 0-.083.003-.125.004-2.118-.127-3.536-.37-4.175-.595.165-.073.408-.162.76-.262z" fill="currentColor"></path></g></svg>
+															</div>
+														</div>
+													</li>
+
+													<li>
+
+														<div class="card__tag">
+															<div class="pin__icon">
+																<svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-14 -12)" fill="none" fill-rule="evenodd"><circle stroke="currentColor" stroke-width="2" cx="24" cy="24" r="24"></circle><path d="M33.333 19.065h-4V17.03c0-2.602-2.18-5.03-4.766-5.03C21.98 12 20 14.428 20 17.03v2.035h-4l-2 14.912h22l-2.667-14.912zm-12-2.033c0-1.998 1.248-3.462 3.234-3.462 1.985 0 3.433 1.464 3.433 3.462v2.033h-6.667v-2.033zm-4 3.388H20v.68c-.36.233-.6.64-.6 1.104 0 .722.58 1.308 1.292 1.308.714 0 1.292-.586 1.292-1.308 0-.486-.262-.91-.65-1.135v-.65H28v.91c-.206.23-.333.537-.333.874 0 .722.578 1.308 1.292 1.308.712 0 1.29-.586 1.29-1.308 0-.59-.386-1.09-.916-1.252v-.532H32l2 12.2H16l1.334-12.2z" fill="currentColor"></path></g></svg>															</div>
+														</div>
+
+													</li>
+
+											</ul>
+
+
+											<div class="address  card__address">
+			<?php if ( has_post_thumbnail() ) {?>
+				<?php the_post_thumbnail( 'medium' );?>
+			<?php } ?>
+
+											</div>
+
+									</footer>
+								</div><!-- .card__content -->
+							</article><!-- .card.card--listing -->
+						</a><!-- .grid_item -->
+		<?php
+		return ob_get_clean();
 	}
 
 	/*public static function is_business_open( $business_id ) {
@@ -603,9 +681,9 @@ class WyzBusinessPost extends WyzBusinessPostOverridden {
 
 		$start_time = '';
 		$end_time = '';
-		
+
 		if ( $_12_format ) {
-			
+
 		}
 	}*/
 }

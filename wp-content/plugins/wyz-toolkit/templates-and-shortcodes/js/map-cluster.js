@@ -119,7 +119,7 @@ function wyz_load_map(){
 		markers = [];
 		infowindow = new google.maps.InfoWindow();
 		bounds = new google.maps.LatLngBounds();
-		
+
 		gpsLen = globalMap.GPSLocations.length;
 		lastIndex = 0;
 
@@ -145,14 +145,14 @@ function wyz_load_map(){
 					'<div id="mapBodyContent">'+
 					('' != globalMap.businessLogoes[ii] ? globalMap.businessLogoes[ii] : '<img class="business-logo-marker wp-post-image" src="'+globalMap.defLogo+'"/>' )
 					+
-					'<h4>'+globalMap.businessNames[ii]+'</h4>'+	
+					'<h4>'+globalMap.businessNames[ii]+'</h4>'+
 					( null != globalMap.afterBusinessNames[ii] ? ( '<div><p>' + globalMap.afterBusinessNames[ii] + '</p></div>' ) : '' ) +
-					'<a href="'+globalMap.businessPermalinks[ii]+'"' + ( 2 == globalMap.templateType ? '' : ' class="wyz-button" style="background-color:' + globalMap.businessCategoriesColors[ii] + ';"' ) + '>'+globalMap.translations.viewDetails+'</a>'+		
+					'<a href="'+globalMap.businessPermalinks[ii]+'"' + ( 2 == globalMap.templateType ? '' : ' class="wyz-button" style="background-color:' + globalMap.businessCategoriesColors[ii] + ';"' ) + '>'+globalMap.translations.viewDetails+'</a>'+
 					'</div>'+
 					'</div>';
 
 				if ('' !== globalMap.markersWithIcons[ii]) {
-					marker = new google.maps.Marker({
+						marker = new google.maps.Marker({
 						position: latlng,
 						icon: {
 							url: globalMap.markersWithIcons[ii],
@@ -160,6 +160,7 @@ function wyz_load_map(){
 							origin: new google.maps.Point(0, 0),
 							anchor: new google.maps.Point(markerAnchorX, markerAnchorY),
 						},
+
 						info: content,
 						shadow: globalMap.myLocationMarker,
 						optimized: false,
@@ -171,6 +172,8 @@ function wyz_load_map(){
 						galleryLoaded: false,
 						gallery: [],
 					});
+
+					console.log(globalMap);
 
 				} else{
 					marker = new google.maps.Marker({
@@ -191,7 +194,7 @@ function wyz_load_map(){
 					bounds.extend(marker.position);
 					map.fitBounds(bounds);
 				}
-				
+
 				var galleryContainer = jQuery('.page-map-right-content .map-info-gallery');
 
 
@@ -200,7 +203,7 @@ function wyz_load_map(){
 						infowindow.setContent(this.info);
 						infowindow.open(map, this);
 					}
-					
+
 					this.setAnimation(google.maps.Animation.oo);
 					jQuery('.map-company-info .company-logo').attr( 'href',this.busPermalink );
 					jQuery('.map-company-info #map-company-info-name>a').attr( 'href',this.busPermalink ).html(this.busName);
@@ -238,7 +241,7 @@ function wyz_load_map(){
 
 					if(!this.galleryLoaded){
 						var This = this;
-						
+
 						jQuery('.page-map-right-content .search-wrapper #map-sidebar-loading').addClass('loading-spinner');
 						jQuery('.page-map-right-content .search-wrapper').css('background-image','');
 
@@ -319,7 +322,7 @@ function wyz_load_map(){
 					}
 				});
 
-				
+
 
 				markers.push(marker);
 				if( 0 >= radVal && ( searching || 'on' == mapAutoZoom )&& marker != undefined ) {
@@ -327,7 +330,7 @@ function wyz_load_map(){
 					map.fitBounds(bounds);
 				}
 			}
-			
+
 			mapCntr++;
 		}
 		if( pageFirstLoad && globalMap.onLoadLocReq &&globalMap.geolocation && navigator.geolocation && 1>globalMap.defRad) {
@@ -342,7 +345,7 @@ function wyz_load_map(){
 					position: { lat: parseFloat(la), lng: parseFloat(lo) },
 					icon: {
 						url: searchMarker,
-						//size: new google.maps.Size(40,55),
+						size: new google.maps.Size(40,55),
 						origin: new google.maps.Point(0, 0),
 						anchor: new google.maps.Point(20, 55),
 					},
@@ -368,7 +371,7 @@ function wyz_load_map(){
 				position: { lat: parseFloat(myLat), lng: parseFloat(myLon) },
 				icon: {
 					url: searchMarker,
-					//size: new google.maps.Size(40,55),
+					size: new google.maps.Size(40,55),
 					origin: new google.maps.Point(0, 0),
 					anchor: new google.maps.Point(20, 55),
 				},
@@ -390,7 +393,7 @@ function wyz_load_map(){
 			circle.bindTo('center', marker, 'position');
 
 			bounds.extend(marker.position);
-				
+
 			map.fitBounds(bounds);
 
 			var sz = 0;
@@ -424,7 +427,7 @@ function wyz_load_map(){
 		if('' != globalMap.businessList){
 			if(globalMap.hasBefore || globalMap.hasAfter){
 				if(globalMap.hasBefore)
-					append += '<li class="prev-page float-left">' + 
+					append += '<li class="prev-page float-left">' +
 						'<button class="wyz-primary-color wyz-prim-color btn-square list-paginate" data-offset="-1"><i class="fa fa-angle-left"> </i> ' + globalMap.translations.prev + '</button></li>';
 				if(globalMap.hasAfter){
 					append += '<li class="next-page float-right">'+
@@ -442,12 +445,16 @@ function wyz_load_map(){
 	function updateBusinessList(){
 		if('' != globalMap.businessList){
 			paginateBusinessList();
+			old_encabesado = '<div class="bus-list-container">';
+			olf_footer = '</div>';
+			encabezado_business_list = '<div class="widgets_area"><div class="section-wrap"><div class="widget_front_page_listing_cards"><div class="widget_title  widget_title--frontpage">';
+			footer_business_list =	'</div></div></div></div>';
 			//jQuery('#business-list').hide();
 			if(globalMap.ess_grid_shortcode == '') {
-			jQuery('#business-list').html(appendTop + '<div class="bus-list-container">' + globalMap.businessList + '</div>' + appendBottom );
+			jQuery('#business-list').html(appendTop + encabezado_business_list + globalMap.businessList + footer_business_list + appendBottom );
 			 }
 			else {
-			jQuery('#business-list').html(appendTop + '<div class="bus-list-container">' + globalMap.ess_grid_shortcode + '</div>' + appendBottom);
+			jQuery('#business-list').html(appendTop + encabezado_business_list  + globalMap.ess_grid_shortcode + footer_business_list + appendBottom);
 			}
 			setTimeout(function(){ jQuery('#business-list').show(); jQuery('#business-list').resize();}, 100);
 		}
@@ -478,7 +485,7 @@ function wyz_load_map(){
 
 			jQuery('#map-mask').fadeIn('"slow"');
 			jQuery('#map-loading').fadeIn('"fast"');
-			
+
 			var locData = jQuery("#wyz-loc-filter").val();
 			if ( mapFirstLoad && undefined != globalMap.defLoc && null != globalMap.defLoc )
 				locData = globalMap.defLoc;
@@ -497,7 +504,7 @@ function wyz_load_map(){
 				}else{
 					searchMarker = globalMap.myLocationMarker;
 				}
-				
+
 				locId = locData.id;
 
 				if( undefined == locId )
@@ -588,12 +595,12 @@ function wyz_load_map(){
 					jQuery('#map-loading').fadeOut('"fast"');
 					return;
 				}
-				
+
 				updateMap();
 
 				if(globalMap.isListingPage)
 					updateBusinessList();
-				
+
 				page+=parseInt(result.postsCount);
 				ajax_map_search(catId, busName, locId, geoEnabled);
 			}
@@ -656,10 +663,10 @@ function wyz_load_map(){
 			globalMap.businessPermalinks.push(result.businessPermalinks[i]);
 			globalMap.businessCategories.push(result.businessCategories[i]);
 			globalMap.businessCategoriesColors.push(result.businessCategoriesColors[i]);
-			
+
 		}
 		globalMap.postsCount = result.postsCount;
-		
+
 	}
 
 
@@ -730,8 +737,8 @@ function wyz_load_map(){
 			case 1:
 				markerAnchorX = 20;
 				markerAnchorY = 55;
-				markerWidthX = 64;
-				markerWidthY = 77;
+				markerWidthX = 40;
+				markerWidthY = 55;
 			break;
 			case 2:
 				markerAnchorX = 0;
@@ -792,7 +799,7 @@ function wyz_load_map(){
 						else
 							handleLocationError(2);
 					}
-				} 
+				}
 			}
 		});
 
@@ -800,7 +807,7 @@ function wyz_load_map(){
 
 		if ( 2 == globalMap.templateType){
 	        jQuery('.range_handle').append('<span></span>');
-	    
+
 			var radiusLength = jQuery('.range_handle span');
 			range.on('input', function() {
 				radiusLength.html( jQuery(this).val() + ' ' + globalMap.radiusUnit );
@@ -839,12 +846,12 @@ function wyz_load_map(){
 					handleLocationError(1);
 				});
 			}
-			
+
 		});
 
 
 		jQuery(".list-paginate").live('click',function(){
-			jQuery(".list-paginate").prop('disabled', true).css('background-color','#68819b'); 
+			jQuery(".list-paginate").prop('disabled', true).css('background-color','#68819b');
 			ajax_business_list(parseInt(jQuery(this).data('offset')));
 		});
 

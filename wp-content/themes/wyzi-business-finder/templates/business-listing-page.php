@@ -14,14 +14,13 @@ if ( function_exists( 'wyz_get_theme_template' ) ) {
 	if ( $template_type == 2 ) {
 		if (class_exists('Essential_Grid'))
 		Essential_Grid::register_shortcode(array("alias"=>""));
-	}	
+	}
 }
 
 ?>
 <div class="margin-bottom-100">
-	<div class="container">
+	<div class="clientes">
 		<div class="row">
-
 			<!--left sidebar -->
 			<?php $sb_template = get_post_meta( get_the_ID(), 'wyz_listing_page_sidebar', true );
 			if ( 'left-sidebar' == $sb_template ){?>
@@ -34,10 +33,10 @@ if ( function_exists( 'wyz_get_theme_template' ) ) {
 			</div>
 			<?php }?>
 
-			<div class="<?php if ( 'full-width' == $sb_template ) { ?>col-lg-12 col-md-12 col-xs-12 listing-no-sidebar<?php } elseif ( 'off' === wyz_get_option( 'resp' ) ) { ?>col-xs-8<?php } else { ?>col-lg-9 col-md-8 col-xs-12 listing-with-sidebar<?php } ?>">
+			<div class="<?php if ( 'full-width' == $sb_template ) { ?>col-lg-12 col-md-12 col-xs-12 listing-no-sidebar<?php } elseif ( 'off' === wyz_get_option( 'resp' ) ) { ?>col-xs-8<?php } else { ?>col-lg-9 col-md-8 col-xs-12 listing-with-sidebar<?php } ?>" style="padding-left: 0px !important; padding-right: 0px !important;">
 
 				<div id="business-list" class="animated  fadeInDown"></div>
-				
+
 				<?php if ( have_posts() ) :
 
 					the_post(); ?>

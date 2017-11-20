@@ -105,4 +105,37 @@ require_once( WYZ_THEME_DIR . '/TGMPA/setup.php' );
 
 // Specify the number of Items per shop page in Woocommerce
 add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 8;' ), 20 );
+
+function lorem_function() {
+  return 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec nec nulla vitae lacus mattis volutpat eu at sapien. Nunc interdum congue libero, quis laoreet elit sagittis ut. Pellentesque lacus erat, dictum condimentum pharetra vel, malesuada volutpat risus. Nunc sit amet risus dolor. Etiam posuere tellus nisl. Integer lorem ligula, tempor eu laoreet ac, eleifend quis diam. Proin cursus, nibh eu vehicula varius, lacus elit eleifend elit, eget commodo ante felis at neque. Integer sit amet justo sed elit porta convallis a at metus. Suspendisse molestie turpis pulvinar nisl tincidunt quis fringilla enim lobortis. Curabitur placerat quam ac sem venenatis blandit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nullam sed ligula nisl. Nam ullamcorper elit id magna hendrerit sit amet dignissim elit sodales. Aenean accumsan consectetur rutrum.';
+}
+
+add_shortcode('lorem', 'lorem_function');
+
+function wmpudev_enqueue_icon_stylesheet() {
+	wp_register_style( 'material-icons', 'https://fonts.googleapis.com/icon?family=Material+Icons' );
+	wp_enqueue_style( 'material-icons');
+}
+add_action( 'wp_enqueue_scripts', 'wmpudev_enqueue_icon_stylesheet' );
+
+// Load the theme stylesheets
+function theme_styles()
+{
+
+	// Example of loading a jQuery slideshow plugin just on the homepage
+	//wp_register_style( 'flexslider', get_template_directory_uri() . '/css/flexslider.css' );
+
+	// Load all of the styles that need to appear on all pages
+	wp_enqueue_style( 'listable-rtl', get_template_directory_uri() . '/css/listable-rtl.css' );
+	wp_enqueue_style( 'listable-style', get_template_directory_uri() . '/css/listable-style.css' );
+	wp_enqueue_style( 'listable-style', get_template_directory_uri() . '/css/mi-incorporado.css' );
+
+	// Conditionally load the FlexSlider CSS on the homepage
+	//if(is_page('home')) {
+	//	wp_enqueue_style('flexslider');
+	//}
+
+}
+add_action('wp_enqueue_scripts', 'theme_styles');
+
 ?>
